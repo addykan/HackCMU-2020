@@ -22,7 +22,7 @@ newDate = f'{date[0:5]}{newMonth}{date[7:-1]}{str(int(date[-1])+1)}'
 newsapi = NewsApiClient(api_key='493020083d574c64974b2eed15eaa050')
 
 # /v2/top-headlines
-top_headlines = newsapi.get_top_headlines(q='Biden',
+top_headlines = newsapi.get_top_headlines(q='Trump',
                                           # sources='bbc-news,the-verge',
                                           #category='general',
                                           language='en',
