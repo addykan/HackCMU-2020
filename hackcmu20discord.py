@@ -8,7 +8,7 @@ import os
 # TOKEN = os.getenv('DISCORD_TOKEN')
 # GUILD = os.getenv('DISCORD_GUILD')
 
-# client = discord.Client()
+
 
 # @client.event
 # async def on_ready():
@@ -31,25 +31,28 @@ import os
 from discord.ext import commands
 from dotenv import load_dotenv
 import random
+from hackcmu20googlenews import *
+import discord
+from discord.ext.commands import Bot
+from discord.ext import commands
+import asyncio
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+GUILD = os.getenv('DISCORD_GUILD')
+
+client = discord.Client()
 
 bot = commands.Bot(command_prefix='!')
 
-@bot.command(name='99')
-async def nine_nine(ctx):
-    brooklyn_99_quotes = [
-        'I\'m the human form of the 💯 emoji.',
-        'https://realpython.com/how-to-make-a-discord-bot-python/',
-        (
-            'Cool. Cool cool cool cool cool cool cool, '
-            'no doubt no doubt no doubt no doubt.'
-        ),
-    ]
-
-    response = random.choice(brooklyn_99_quotes)
-    await ctx.send(response)
+@bot.command(name='news')
+async def getNews(ctx, arg):
+    query = arg
+    response = getArticles(query)
+    if len(response) == 0:
+        await ctx.send('No news found.')
+    else:
+        await ctx.send(response)
 
 @bot.command(name='pythonbot')
 async def python_bot(ctx):
@@ -64,6 +67,35 @@ async def python_bot(ctx):
     response = random.choice(python_URL)
     await ctx.send(response)
 
+# https://stackoverflow.com/questions/52348148/delete-messages-with-python-discord-bot
+@bot.command(name='purge')
+async def purge(ctx, limit: int = 100, *, matches: str = None):
+    """Purge all messages, optionally from ``user``
+    or contains ``matches``."""
+    # logger.info('purge', extra={'ctx': ctx})
+    def check_msg(msg):
+        if msg.id == ctx.message.id:
+            return True
+        # if user is not None:
+        #     if msg.author.id != user.id:
+        #         return False
+        if matches is not None:
+            if matches not in msg.content:
+                return False
+        return True
+    deleted = await ctx.channel.purge(limit=limit+1, check=check_msg)
+    deletedMessage = f'Purged {len(deleted) - 1} messages!'
+    msg = await ctx.send(deletedMessage)
+    await a.sleep(2)
+    await msg.delete()
 
+@bot.command(name = 'spotify')
+async def searchSpotify(ctx, arg):
+    artistName = arg
+    response = artistSearch(artistName)
+    if len(response) == 0:
+        await ctx.send('No artists found.')
+    else:
+        await ctx.send(response)
 
 bot.run(TOKEN)
